@@ -15,12 +15,21 @@ const authenticate = (req,res,next) => {
     }
 
     const token = authHeader.split(' ')[1];
+
+    try {
+        const payload = verifyToken(token, "JWT_SECRET")
+
+        req.user = payload
+
+        next()
+    } catch (error) {
+        return res.status(401).json({
+            success: false,
+            message: 'Invalid or expired token',
+            error: error.message 
+        });
+    }
     
-    const payload = verifyToken(token, "JWT_SECRET")
-
-    req.user = payload
-
-    next()
 }
 
 module.exports = authenticate
