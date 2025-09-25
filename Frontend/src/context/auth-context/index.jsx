@@ -9,60 +9,81 @@ export default function AuthProvider({ children }) {
   const [signInFormData, setSignInFormData] = useState(initalSignInFormData);
   const [signUpFormData, setSignUpFormData] = useState(initalSignUpFormData);
   const [auth, setAuth] = useState({
-    authenticate : false,
-    user: null
-  })
+    authenticate: false,
+    user: null,
+  });
   const [loading, setLoading] = useState(true);
 
   async function handleRegisterUser(e) {
-    e.preventDefault()
-    const data = await registerService(signUpFormData)
+    e.preventDefault();
+    const data = await registerService(signUpFormData);
   }
 
   async function handleLoginUser(e) {
-    e.preventDefault()
-    const data = await loginService(signInFormData)
+    e.preventDefault();
+    const data = await loginService(signInFormData);
 
-    if(data.success){
-      sessionStorage.setItem('accessToken', JSON.stringify(data.data.accessToken))
+    if (data.success) {
+      sessionStorage.setItem(
+        "accessToken",
+        JSON.stringify(data.data.accessToken)
+      );
       setAuth({
         authenticate: true,
-        user : data.data.user
-      })
+        user: data.data.user,
+      });
     } else {
       setAuth({
         authenticate: false,
-        user : null
-      })
+        user: null,
+      });
     }
   }
 
   // check Auth user
   async function checkAuthUser() {
-    const data = await checkAuthService();
+    try {
+      const data = await checkAuthService();
 
-    if(data.success){
-      setAuth({
-        authenticate: true,
-        user : data.data.user
-      });
-      setLoading(false);
-    } else {
-      setAuth({
-        authenticate: false,
-        user : null
-      })
-      setLoading(false);
+      if (data.success) {
+        setAuth({
+          authenticate: true,
+          user: data.data.user,
+        });
+        setLoading(false);
+      } else {
+        setAuth({
+          authenticate: false,
+          user: null,
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      // For handle when server send error and axios send it like Promise.reject.
+      console.log(error);
+      if (!error?.response?.data?.success) {
+        setAuth({
+          authenticate: false,
+          user: null,
+        });
+        setLoading(false);
+      }
     }
   }
 
-  useEffect(()=>{
-    checkAuthUser()
-  },[])
+  function resetCredentials() {
+    setAuth({
+      authenticate: false,
+      user: null,
+    });
+  }
+
+  useEffect(() => {
+    checkAuthUser();
+  }, []);
 
   console.log(auth);
   console.log("hxhhhxx");
-  
 
   return (
     <AuthContext.Provider
@@ -74,12 +95,11 @@ export default function AuthProvider({ children }) {
         handleRegisterUser,
         handleLoginUser,
         auth,
-        setAuth
+        setAuth,
+        resetCredentials
       }}
     >
-      {
-        loading ? <Skeleton/> : children
-      }
+      {loading ? <Skeleton /> : children}
     </AuthContext.Provider>
   );
 }
