@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const authRoutes = require('./routes/auth-routes/index.js')
+const mediaRoutes = require('./routes/instructor-routes/media-routes.js')
 
 
 const app = express()
@@ -26,6 +27,7 @@ mongoose
 
 // routes configuration
 app.use('/auth',authRoutes)
+app.use('/media',mediaRoutes)
 
 app.use('',(req,res)=>{
     res.json({

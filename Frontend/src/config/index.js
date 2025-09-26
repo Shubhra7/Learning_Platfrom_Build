@@ -169,7 +169,7 @@ export const courseCurriculumInitialFormData = [
     title: "",
     videoUrl: "",
     freePreview: false,
-    public_id: "",
+    public_id: "",   //will be porvided by cloudinary
   },
 ];
 
