@@ -14,12 +14,20 @@ export default function InstructorProvider({ children }) {
   const [courseCurriculumFormDataa, setCourseCurriculumFormDataa] =
     useState(courseCurriculumInitialFormData);
 
+  const [mediaUploadProgress, setMediaUploadProgress] = useState(false);
+
+  const [mediaUploadProgressPercentage, setMediaUploadProgressPercentage] = useState(0)
+
   return (
     <InstructorContext.Provider
       value={{
         courseLandingFormData,
         setCourseLandingFormData,
-        courseCurriculumFormDataa, setCourseCurriculumFormDataa
+        courseCurriculumFormDataa, 
+        setCourseCurriculumFormDataa,
+        mediaUploadProgress, 
+        setMediaUploadProgress,
+        mediaUploadProgressPercentage, setMediaUploadProgressPercentage
       }}
     >
       {children}

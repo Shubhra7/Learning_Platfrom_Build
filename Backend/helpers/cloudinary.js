@@ -11,6 +11,7 @@ const uploadMediaToCloudinary = async (filePath) => {
   try {
     const reuslt = await cloudinary.uploader.upload(filePath, {
       resource_type: "auto",
+      timeout: 60000 
     });
 
     return reuslt;

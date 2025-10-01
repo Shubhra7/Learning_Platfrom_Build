@@ -9,15 +9,29 @@ export async function registerService(formData) {
   return data.data;
 }
 
-
 export async function loginService(formData) {
-  const data = await axiosInstance.post("/auth/login",formData);
+  const data = await axiosInstance.post("/auth/login", formData);
 
   return data.data;
 }
 
 export async function checkAuthService() {
   const { data } = await axiosInstance.get("/auth/check-auth");
+
+  return data;
+}
+
+export async function mediaUploadService(formData, onProgressCallback) {
+  const { data } = await axiosInstance.post("/media/upload", formData, {
+    // for percentange show in uploading
+    onUploadProgress: (progressEvent) => {
+      const percentCompleted = Math.round(
+        (progressEvent.loaded * 100) / progressEvent.total
+      );
+      // setting the global setMediaUploadProgressPercentage
+      onProgressCallback(percentCompleted);
+    },
+  });
 
   return data;
 }

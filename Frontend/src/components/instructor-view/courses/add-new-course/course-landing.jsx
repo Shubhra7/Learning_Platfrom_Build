@@ -8,6 +8,9 @@ const CourseLanding = () => {
   const { courseLandingFormData, setCourseLandingFormData } =
     useContext(InstructorContext);
 
+    console.log("courseLandingFormData",courseLandingFormData);
+    
+
   return (
     <Card>
       <CardHeader>
