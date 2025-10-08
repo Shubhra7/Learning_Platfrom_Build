@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import VideoPlayer from "@/components/video-player";
 import { courseCurriculumInitialFormData } from "@/config";
 import { InstructorContext } from "@/context/instructor-context";
-import { mediaUploadService } from "@/services";
+import { mediaDeleteService, mediaUploadService } from "@/services";
 import React, { useContext } from "react";
 
 const CourseCurriculum = () => {
@@ -88,11 +88,33 @@ const CourseCurriculum = () => {
     }
   }
 
-  const isCourseCurriculumFormDataValid= () =>{
-    return courseCurriculumFormDataa.every(item=> {
-      return item && typeof item==='object' && item.title.trim() !== '' && item.videoUrl.trim() !== ""
-    })
+  async function handleReplaceVideo(currentIndex) {
+    let cpyCourseCurriculumFormData = [...courseCurriculumFormDataa];
+    const getCurrentVideoPublicId =
+      cpyCourseCurriculumFormData[currentIndex].public_id;
+    const deleteCurrentMediaResponse = await mediaDeleteService(getCurrentVideoPublicId)
+
+    if(deleteCurrentMediaResponse?.success){
+      cpyCourseCurriculumFormData[currentIndex]={
+        ...cpyCourseCurriculumFormData[currentIndex],
+        videoUrl: '',
+        public_id: ''
+      }
+    }
+
+    setCourseCurriculumFormDataa(cpyCourseCurriculumFormData)
   }
+
+  const isCourseCurriculumFormDataValid = () => {
+    return courseCurriculumFormDataa.every((item) => {
+      return (
+        item &&
+        typeof item === "object" &&
+        item.title.trim() !== "" &&
+        item.videoUrl.trim() !== ""
+      );
+    });
+  };
 
   console.log(courseCurriculumFormDataa);
 
@@ -102,7 +124,12 @@ const CourseCurriculum = () => {
         <CardTitle>Create Course Curriculum</CardTitle>
       </CardHeader>
       <CardContent>
-        <Button disabled={!isCourseCurriculumFormDataValid() || mediaUploadProgress} onClick={handleNewLecture}>Add Lecture</Button>
+        <Button
+          disabled={!isCourseCurriculumFormDataValid() || mediaUploadProgress}
+          onClick={handleNewLecture}
+        >
+          Add Lecture
+        </Button>
         {mediaUploadProgress ? (
           <MediaProgressBar
             isMediaUploading={mediaUploadProgress}
@@ -135,28 +162,28 @@ const CourseCurriculum = () => {
                 </div>
               </div>
               <div className="mt-6">
-                {
-                  courseCurriculumFormDataa[index]?.videoUrl ? (
-                    <div className="flex gap-3">
-                      <VideoPlayer 
-                        url={courseCurriculumFormDataa[index]?.videoUrl}
-                        width="450px"
-                        height="200px"
-                      />
-                      <Button>Replace Video</Button>
-                      <Button className="bg-red-900">Delete Lecture</Button>
-                    </div>
-                  ) : (
-                    <Input
-                      type="file"
-                      accept="video/*"
-                      className="mb-4"
-                      onChange={(event) =>
-                        handleSingleLectureUpload(event, index)
-                      }
+                {courseCurriculumFormDataa[index]?.videoUrl ? (
+                  <div className="flex gap-3">
+                    <VideoPlayer
+                      url={courseCurriculumFormDataa[index]?.videoUrl}
+                      width="450px"
+                      height="200px"
                     />
-                  )
-                }
+                    <Button onClick={() => handleReplaceVideo(index)}>
+                      Replace Video
+                    </Button>
+                    <Button className="bg-red-900">Delete Lecture</Button>
+                  </div>
+                ) : (
+                  <Input
+                    type="file"
+                    accept="video/*"
+                    className="mb-4"
+                    onChange={(event) =>
+                      handleSingleLectureUpload(event, index)
+                    }
+                  />
+                )}
               </div>
             </div>
           ))}
