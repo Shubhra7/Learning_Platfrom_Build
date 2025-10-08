@@ -96,10 +96,10 @@ const VideoPlayer = ({ width = "100%", height = "100%", url }) => {
         volume={volume}
         muted={muted}
         onProgress={handleProgress}
-        // controls    // when do by default by reactplayer to control
+        controls    // when do by default by reactplayer to control
         
       />
-      {showControls && (
+      {/* {showControls && (
         <div
           className={`absolute
             bottom-0 left-0 right-0 bg-gray-800 bg-opacity-75 p-4 transition-opacity duration-300 ${
@@ -190,7 +190,7 @@ const VideoPlayer = ({ width = "100%", height = "100%", url }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
